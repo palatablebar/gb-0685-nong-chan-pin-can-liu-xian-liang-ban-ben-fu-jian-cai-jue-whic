@@ -22,6 +22,7 @@ def run(content,parameters=None,stage=7):
     state['run_id']=identity(content,params);state['manifest']=manifest(content,params,time.monotonic()-start)
     state['source_b64']=base64.b64encode(content).decode('ascii')
     if stage>=7:
-        from app.modules.m7_archive.export_out import checksum
+        from app.modules.m7_archive.export_out import checksum,client_checksum
         state['archive']['sha256']=checksum(state)
+        state['archive']['client_sha256']=client_checksum(state)
     return state

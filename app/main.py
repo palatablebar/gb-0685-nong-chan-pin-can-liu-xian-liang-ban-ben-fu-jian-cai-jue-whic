@@ -5,7 +5,7 @@ from app.errors import DomainError
 from app.workflow import run,load
 from app import store
 from app.web import payload
-from app.modules.m7_archive.export_out import bundle
+from app.modules.m7_archive.export_out import client_bundle
 
 def create_app():
     app=Flask(__name__);app.config['MAX_CONTENT_LENGTH']=2_000_000
@@ -34,7 +34,7 @@ def create_app():
     def download(run_id):
         state=store.get(run_id)
         if not state.get('reconcile',{}).get('balanced'):raise DomainError('UNBALANCED','对账未平')
-        return Response(bundle(state),mimetype='text/csv; charset=utf-8',headers={'Content-Disposition':'attachment; filename=evidence.csv'})
+        return Response(client_bundle(state),mimetype='text/csv; charset=utf-8',headers={'Content-Disposition':'attachment; filename=review_package.csv'})
     with app.app_context():
         if not store.history():
             state=run(load('dirty.csv'),{});store.save(state['run_id'],state)
